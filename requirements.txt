@@ -1,0 +1,6 @@
+fastmcp>=2.0
+sentence-transformers
+transformers
+torch
+uvicorn
+httpx
