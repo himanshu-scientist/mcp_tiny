@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+*.log
+*.sqlite3
+*.db
+*.egg-info/
+dist/
+build/
+*.ipynb_checkpoints
+tools/__pycache__/
+client/__pycache__/
+mcp_tiny.egg-info/
+utils/__pycache__/

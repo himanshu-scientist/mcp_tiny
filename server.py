@@ -2,11 +2,11 @@
 from fastmcp import FastMCP
 import fastmcp
 
-from tools import add, multiply, reverse_string, count_words
+from tools import add, multiply, reverse_string, count_words, embed_text, compare_texts
 from client.list_tools import list_available_tools as  list_tools
 
 # Register tools by passing the functions to the server constructor
-mcp = FastMCP("base-ey-mcp", tools=[add, multiply, reverse_string, count_words])
+mcp = FastMCP("base-ey-mcp", tools=[add, multiply, reverse_string, count_words, embed_text, compare_texts])
 
 from starlette.responses import JSONResponse
  
@@ -90,6 +90,36 @@ async def call_count_words_tool(request):
         return JSONResponse({"result": result})
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=400)
+    
+@mcp.custom_route("/tool/embed_text", methods=["POST"])
+async def call_embed_text_tool(request):
+    try:
+        # Extract input from request body
+        data = await request.json()
+        text = str(data.get("text"))
+
+        # Call the tool
+        result = embed_text(text)
+
+        return JSONResponse({"result": result})
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=400)
+    
+@mcp.custom_route("/tool/compare_texts", methods=["POST"])
+async def call_compare_texts_tool(request):
+    try:
+        # Extract input from request body
+        data = await request.json()
+        text1 = str(data.get("text1"))
+        text2 = str(data.get("text2"))
+
+        # Call the tool
+        result = compare_texts(text1,text2)
+
+        return JSONResponse({"result": result})
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=400)
+
 
 # Adhoc tool to demonstrate enable/disable functionality
 
