@@ -1,9 +1,16 @@
 # tools/text_tools.py
+from fastmcp import FastMCP, Context
 
-def reverse_string(s: str) -> str:
+
+async def reverse_string(s: str, ctx: Context) -> str:
     """Reverse a string."""
-    return s[::-1]
+    reversed_str = s[::-1]
+    await ctx.info("Reversed string", extra={"original": s, "reversed": reversed_str})
+    return reversed_str
 
-def count_words(s: str) -> int:
+
+async def count_words(s: str, ctx: Context) -> int:
     """Count the number of words in a string."""
-    return len(s.split())
+    word_count = len(s.split())
+    await ctx.info("Counted words", extra={"input": s, "word_count": word_count})
+    return word_count

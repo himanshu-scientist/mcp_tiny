@@ -4,3 +4,4 @@ transformers
 torch
 uvicorn
 httpx
+boto3

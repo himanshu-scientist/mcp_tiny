@@ -13,3 +13,4 @@ tools/__pycache__/
 client/__pycache__/
 mcp_tiny.egg-info/
 utils/__pycache__/
+my_env/
