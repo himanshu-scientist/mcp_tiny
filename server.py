@@ -1,6 +1,12 @@
 # server.py
-import sys
-sys.stdout.flush()
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s %(message)s"
+)
+
+logging.getLogger("fastmcp").setLevel(logging.INFO)
+
 from fastmcp import FastMCP
 from fastmcp import FastMCP, Context
 from fastmcp.server.dependencies import get_context 
@@ -34,9 +40,9 @@ async def call_add_tool(request):
         b = float(data.get("b"))
 
         # Call the tool
-        ctx=get_context()
+        ctx=get_context(request)
         result = add(a, b,ctx)
-        ctx.info("Performed addition", extra={"a": a, "b": b, "result": result})
+        await ctx.info("Performed addition", extra={"a": a, "b": b, "result": result})
 
         return JSONResponse({"result": result})
     except Exception as e:
@@ -132,12 +138,33 @@ async def call_compare_texts_tool(request):
 
 @mcp.tool
 def dynamic_tool():
+    """A dynamic tool that can be enabled or disabled."""
     return "I am a dynamic tool."
 
 # Disable and re-enable the tool
 dynamic_tool.disable()
 dynamic_tool.enable()
 
+
+
+@mcp.tool
+async def analyze_data(data: list[float], ctx: Context) -> dict:
+    """Analyze numerical data with comprehensive logging."""
+    await ctx.debug("Starting analysis of numerical data")
+    await ctx.info(f"Analyzing {len(data)} data points")
+    
+    try:
+        if not data:
+            await ctx.warning("Empty data list provided")
+            return {"error": "Empty data list"}
+        
+        result = sum(data) / len(data)
+        await ctx.info(f"Analysis complete, average: {result}")
+        return {"average": result, "count": len(data)}
+        
+    except Exception as e:
+        await ctx.error(f"Analysis failed: {str(e)}")
+        raise
 
 if __name__ == "__main__":
     mcp.run()
