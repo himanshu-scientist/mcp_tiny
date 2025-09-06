@@ -1,6 +1,9 @@
 # server.py
+import sys
+sys.stdout.flush()
 from fastmcp import FastMCP
-import fastmcp
+from fastmcp import FastMCP, Context
+from fastmcp.server.dependencies import get_context 
 
 from tools import add, multiply, reverse_string, count_words, embed_text, compare_texts
 from client.list_tools import list_available_tools as  list_tools
@@ -31,7 +34,9 @@ async def call_add_tool(request):
         b = float(data.get("b"))
 
         # Call the tool
-        result = add(a, b)
+        ctx=get_context()
+        result = add(a, b,ctx)
+        ctx.info("Performed addition", extra={"a": a, "b": b, "result": result})
 
         return JSONResponse({"result": result})
     except Exception as e:
@@ -47,6 +52,8 @@ async def call_multiply_tool(request):
         data = await request.json()
         a = float(data.get("a"))
         b = float(data.get("b"))
+
+        # Create context from request
 
         # Call the tool
         result = multiply(a, b)
@@ -66,7 +73,7 @@ async def call_reverse_string_tool(request):
         data = await request.json()
         s = str(data.get("s"))
         # Call the tool
-        result = reverse_string(s)
+        result = reverse_string(s,Context)
 
         return JSONResponse({"result": result})
     except Exception as e:
@@ -132,5 +139,5 @@ dynamic_tool.disable()
 dynamic_tool.enable()
 
 
-# if __name__ == "__main__":
-#     mcp.run()
+if __name__ == "__main__":
+    mcp.run()

@@ -31,8 +31,9 @@ MODEL_ID = "amazon.titan-embed-text-v1"
 
 
 
-async def embed_text(text: str, ctx: Context) -> list:
-    await ctx.info(f"Embedding text: {text}")
+async def embed_text(text: str) -> list:
+    #await ctx.info(f"Embedding text: {text}")
+    """Return embedding of texts using Titan embeddings."""
     payload = {
         "inputText": text
     }
@@ -45,20 +46,20 @@ async def embed_text(text: str, ctx: Context) -> list:
         )
         response_body = json.loads(response["body"].read())
         embedding = response_body["embedding"]
-        await ctx.debug(f"Embedding length: {len(embedding)}")
+        #await ctx.debug(f"Embedding length: {len(embedding)}")
         return embedding
     except Exception as e:
-        await ctx.error(f"Error during embedding: {str(e)}")
+        #await ctx.error(f"Error during embedding: {str(e)}")
         raise
 
 
-async def compare_texts(text1: str, text2: str, ctx: Context) -> float:
+async def compare_texts(text1: str, text2: str) -> float:
     """Return cosine similarity between two texts using Titan embeddings."""
-    await ctx.info("Starting comparison", extra={"text1": text1, "text2": text2})
-    emb1 = [await embed_text(text1, ctx)]
-    emb2 = [await embed_text(text2, ctx)]
+    #await ctx.info("Starting comparison", extra={"text1": text1, "text2": text2})
+    emb1 = [await embed_text(text1)]
+    emb2 = [await embed_text(text2)]
     similarity = float(cosine_similarity(emb1, emb2)[0][0])
-    await ctx.info(f"Cosine similarity: {similarity}")
+    #await ctx.info(f"Cosine similarity: {similarity}")
     return similarity
 
 # if __name__ == "__main__":

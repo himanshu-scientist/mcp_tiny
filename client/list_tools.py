@@ -22,6 +22,6 @@ async def list_available_tools():
 
     return {"Available tools on this MCP server" : final_tool}
 
-if __name__ == "__main__":
-    asyncio.run(list_available_tools())
+# if __name__ == "__main__":
+#     asyncio.run(list_available_tools())
 

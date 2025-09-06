@@ -1,0 +1,13 @@
+{
+	"servers": {
+        "my-mcp-server": {
+            "type": "stdio",
+            "command": ".\\my_env\\Scripts\\python.exe",
+            "args": [
+                "server.py"
+            ],
+            "cwd": "C:\\Users\\LU133QP\\Documents\\AIEngProj\\mcp_tiny"
+        }
+    },
+    "inputs": []
+}
