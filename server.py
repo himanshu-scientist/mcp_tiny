@@ -134,10 +134,10 @@ dynamic_tool.enable()
 
 # if __name__ == "__main__":
 #     mcp.run()
-from llm_agent import call_titan_with_tools,llm_agent_call, llm_agent_call_1
+from llm_agent import llm_get_expected_tool_and_format, llm_respond_user
 from client.list_tools import list_available_tools
 from client.call_tools import call_tool_by_name
-
+import ast
 @mcp.custom_route("/llm-agent", methods=["POST"])
 async def llm_agent_endpoint(request):
     try:
@@ -151,47 +151,31 @@ async def llm_agent_endpoint(request):
         print("Tools fetched from MCP server:", tools)
 
         # Call Titan model
-        llm_output = call_titan_with_tools(user_prompt, tools)
-
-        print('debug point 1')
-        print(f"LLM Output {llm_output} from this himanshu code:")
-
-        # Check if LLM returned a tool call
-        if "TOOL_CALL" in llm_output:
-            print('debug point 2')
-            tool_call = llm_output.replace("TOOL_CALL:", "").strip()
-            print(f"Tool call extracted: {tool_call}, debug point 3")
-            # Parse tool name and args
-            import re, ast
-            match = re.match(r"(\w+)\((.*)\)", tool_call)
-            print('debug point 4', match)
-            if not match:
-                return JSONResponse({"llm": llm_output, "error": "Invalid tool call format"})
-
-            tool_name = match.group(1)
-            print('debug point 5', tool_name)
-            tool_args_str = match.group(2)
-            print('debug point 6', tool_args_str)
-            try:
-                tool_args = ast.literal_eval(tool_args_str)  # Safe parsing of args
-                print('debug point 7', tool_args)
-            except Exception as e:
-                return JSONResponse({"llm": llm_output, "error": f"Error parsing tool args: {e}"})
-
-            # Call the tool
-            tool_result = await call_tool_by_name(tool_name, tool_args)
-            print('debug point 7.1', tool_result)
-            llm_output = llm_agent_call_1(user_prompt, tool_result)
-            print('debug point 8', llm_output)
+        tool_and_args = llm_get_expected_tool_and_format(user_prompt, tools)
+        print('debug point 1', tool_and_args)
+        if not tool_and_args.startswith('('):
+            # LLM did not return a tool call, respond directly to user
+            llm_output = llm_respond_user(user_prompt, tool_and_args)
+            print('debug point 3', llm_output)
             return JSONResponse({
                 "llm_response": llm_output,
-                "tool_used": tool_name,
-                "status": "success"
             })
-
         else:
-            # No tool call, return the raw response
-            return JSONResponse({"llm": llm_output})
+            print("LLM decided to use a tool.")
+
+            print('type of tool_and_args', type(tool_and_args))
+            tool_and_args = ast.literal_eval(tool_and_args)
+            print('type of tool_and_args', type(tool_and_args))
+            
+            tool_result = await call_tool_by_name(*tool_and_args)
+            print('debug point 2',tool_result)
+
+            llm_output = llm_respond_user(user_prompt, tool_result)
+            print('debug point 3', llm_output)
+            return JSONResponse({
+                    "llm_response": llm_output,
+                })
+    
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
     
