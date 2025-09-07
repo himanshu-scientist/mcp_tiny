@@ -22,3 +22,12 @@ class MathTool:
         result= a * b
         Context.info("Performed multiplication", extra={"a": a, "b": b, "result": result})
         return result
+
+
+math_tool = MathTool()
+
+def add(a, b,ctx):
+    return math_tool.add(a, b,ctx)
+
+def multiply(a, b,ctx):
+    return math_tool.multiply(a, b,ctx)

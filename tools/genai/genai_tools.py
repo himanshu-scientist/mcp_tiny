@@ -43,6 +43,14 @@ class GenAITool:
         similarity = float(cosine_similarity(emb1, emb2)[0][0])
         await ctx.info(f"Cosine similarity: {similarity}")
         return similarity
+    
+
+genai_tool = GenAITool()
+
+def embed_text(text,ctx):
+    return genai_tool.embed_text(text,ctx)
+def compare_texts(text1, text2,ctx):
+    return genai_tool.compare_texts(text1, text2,ctx)
 
 # if __name__ == "__main__":
 #     text_a = "The quick brown fox jumps over the lazy dog."

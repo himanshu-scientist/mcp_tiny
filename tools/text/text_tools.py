@@ -15,3 +15,9 @@ class TextTool:
         word_count = len(s.split())
         await ctx.info("Counted words", extra={"input": s, "word_count": word_count})
         return word_count
+    
+text_tool = TextTool()
+def reverse_string(s,ctx):
+    return text_tool.reverse_string(s,ctx)
+def count_words(s,ctx):
+    return text_tool.count_words(s,ctx)
