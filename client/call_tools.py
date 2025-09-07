@@ -1,13 +1,14 @@
 # call_tools.py
 import asyncio
-import tool_utils
-
+# import tool_utils
+from client import tool_utils
 async def call_tool_by_name(tool_name: str, input_data: dict):
     client = tool_utils.get_client()
     async with client:
         result = await client.call_tool(tool_name, input_data)
         print(f"Result from '{tool_name}': {result}")
         print('--'*20)
+    return result
 
 # if __name__ == "__main__":
 #     # Example usage
