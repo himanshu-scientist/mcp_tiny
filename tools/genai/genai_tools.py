@@ -1,22 +1,4 @@
-# # tools/genai_tools.py
-
-# from sentence_transformers import SentenceTransformer
-
-# model = SentenceTransformer("all-MiniLM-L6-v2")  # Load your model once
-
-# def embed_text(text: str) -> list:
-#     """Return the embedding of the input text."""
-#     return model.encode(text).tolist()
-
-# def compare_texts(text1: str, text2: str) -> float:
-#     """Return cosine similarity between two texts."""
-#     from sklearn.metrics.pairwise import cosine_similarity
-#     emb1 = model.encode([text1])
-#     emb2 = model.encode([text2])
-#     return float(cosine_similarity(emb1, emb2)[0][0])
-
-
-# tools/genai_tools.py
+# tools/genai/genai_tools.py
 
 import boto3
 import json
@@ -31,7 +13,7 @@ MODEL_ID = "amazon.titan-embed-text-v1"
 
 
 
-async def embed_text(text: str) -> list:
+async def embed_text(text: str, ctx:Context) -> list:
     #await ctx.info(f"Embedding text: {text}")
     """Return embedding of texts using Titan embeddings."""
     payload = {
@@ -53,7 +35,7 @@ async def embed_text(text: str) -> list:
         raise
 
 
-async def compare_texts(text1: str, text2: str) -> float:
+async def compare_texts(text1: str, text2: str,ctx:Context) -> float:
     """Return cosine similarity between two texts using Titan embeddings."""
     #await ctx.info("Starting comparison", extra={"text1": text1, "text2": text2})
     emb1 = [await embed_text(text1)]
