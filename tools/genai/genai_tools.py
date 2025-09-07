@@ -3,7 +3,7 @@
 import boto3
 import json
 from sklearn.metrics.pairwise import cosine_similarity
-from fastmcp import FastMCP, Context
+from fastmcp import Context
 
 # Initialize Bedrock client
 bedrock = boto3.client("bedrock-runtime", region_name="us-east-1")  # Use your region
@@ -12,37 +12,37 @@ MODEL_ID = "amazon.titan-embed-text-v1"
 
 
 
+class GenAITool:
+    async def embed_text(text: str, ctx:Context) -> list:
+        #await ctx.info(f"Embedding text: {text}")
+        """Return embedding of texts using Titan embeddings."""
+        payload = {
+            "inputText": text
+        }
+        try:
+            response = bedrock.invoke_model(
+                body=json.dumps(payload),
+                modelId=MODEL_ID,
+                accept="application/json",
+                contentType="application/json"
+            )
+            response_body = json.loads(response["body"].read())
+            embedding = response_body["embedding"]
+            await ctx.debug(f"Embedding length: {len(embedding)}")
+            return embedding
+        except Exception as e:
+            await ctx.error(f"Error during embedding: {str(e)}")
+            raise
 
-async def embed_text(text: str, ctx:Context) -> list:
-    #await ctx.info(f"Embedding text: {text}")
-    """Return embedding of texts using Titan embeddings."""
-    payload = {
-        "inputText": text
-    }
-    try:
-        response = bedrock.invoke_model(
-            body=json.dumps(payload),
-            modelId=MODEL_ID,
-            accept="application/json",
-            contentType="application/json"
-        )
-        response_body = json.loads(response["body"].read())
-        embedding = response_body["embedding"]
-        #await ctx.debug(f"Embedding length: {len(embedding)}")
-        return embedding
-    except Exception as e:
-        #await ctx.error(f"Error during embedding: {str(e)}")
-        raise
 
-
-async def compare_texts(text1: str, text2: str,ctx:Context) -> float:
-    """Return cosine similarity between two texts using Titan embeddings."""
-    #await ctx.info("Starting comparison", extra={"text1": text1, "text2": text2})
-    emb1 = [await embed_text(text1)]
-    emb2 = [await embed_text(text2)]
-    similarity = float(cosine_similarity(emb1, emb2)[0][0])
-    #await ctx.info(f"Cosine similarity: {similarity}")
-    return similarity
+    async def compare_texts(text1: str, text2: str,ctx:Context) -> float:
+        """Return cosine similarity between two texts using Titan embeddings."""
+        await ctx.info("Starting comparison", extra={"text1": text1, "text2": text2})
+        emb1 = [await embed_text(text1)]
+        emb2 = [await embed_text(text2)]
+        similarity = float(cosine_similarity(emb1, emb2)[0][0])
+        await ctx.info(f"Cosine similarity: {similarity}")
+        return similarity
 
 # if __name__ == "__main__":
 #     text_a = "The quick brown fox jumps over the lazy dog."
