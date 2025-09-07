@@ -20,11 +20,12 @@ from tools.genai.genai_tools import embed_text, compare_texts
 from client.list_tools import list_available_tools as  list_tools
 
 # Register tools by passing the functions to the server constructor
-mcp = FastMCP("base-ey-mcp", tools=[add, multiply, reverse_string, count_words, embed_text, compare_texts])
+mcp = FastMCP("base-ey-mcp")
 
 from starlette.responses import JSONResponse
  
 @mcp.custom_route("/health", methods=["GET"])
+
 async def health_check(request):
     return JSONResponse({"desc": "Health of server is okay"})
 
@@ -38,16 +39,12 @@ async def client_tool_list(request):
 
 #@mcp.custom_route("/tool/add", methods=["POST"])
 @mcp.tool
-async def call_add_tool(request,ctx:Context):
+async def call_add_tool(a : float, b: float, ctx: Context)-> float:
+    """Call the addition tool."""
     try:
-        # Extract input from request body
-        data = await request.json()
-        a = float(data.get("a"))
-        b = float(data.get("b"))
 
         # Call the tool
-        #ctx=get_context(request)
-        result = add(a, b,ctx)
+        result = add(a, b)
         await ctx.info("Performed addition", extra={"a": a, "b": b, "result": result})
 
         return JSONResponse({"result": result})
@@ -59,20 +56,16 @@ async def call_add_tool(request,ctx:Context):
 
 #@mcp.custom_route("/tool/multiply", methods=["POST"])
 @mcp.tool
-async def call_multiply_tool(request,ctx:Context):
+async def call_multiply_tool(a : float, b: float, ctx: Context)-> float:
+    """Call the multiplication tool."""
     try:
-        # Extract input from request body
-        data = await request.json()
-        a = float(data.get("a"))
-        b = float(data.get("b"))
-
-        # Create context from request
-
         # Call the tool
-        result = multiply(a, b,ctx)
+        result = multiply(a, b)
+        ctx.info("Performed multiplication", extra={"a": a, "b": b, "result": result})
 
         return JSONResponse({"result": result})
     except Exception as e:
+        ctx.error("ERROR while  Performing multiplication")
         return JSONResponse({"error": str(e)}, status_code=400)
     
 
@@ -81,16 +74,14 @@ async def call_multiply_tool(request,ctx:Context):
 
 #@mcp.custom_route("/tool/reverse_string", methods=["POST"])
 @mcp.tool
-async def call_reverse_string_tool(request,ctx:Context):
+async def call_reverse_string_tool(s: str,ctx:Context)-> str:
+    """Call the string reversing tool."""
     try:
-        # Extract input from request body
-        data = await request.json()
-        s = str(data.get("s"))
-        # Call the tool
-        result = reverse_string(s,ctx)
-
+        result = reverse_string(s)
+        await ctx.info("Reversed string", extra={"original": s, "reversed": result})
         return JSONResponse({"result": result})
     except Exception as e:
+        await ctx.error("Error in Reversed string")
         return JSONResponse({"error": str(e)}, status_code=400)
 
 
@@ -100,48 +91,42 @@ async def call_reverse_string_tool(request,ctx:Context):
 
 #@mcp.custom_route("/tool/count_words", methods=["POST"])
 @mcp.tool
-async def call_count_words_tool(request,ctx:Context):
+async def call_count_words_tool(s :str,ctx:Context):
+    """Call the word counting tool."""
     try:
-        # Extract input from request body
-        data = await request.json()
-        s = str(data.get("s"))
-
         # Call the tool
         result = count_words(s,ctx)
+        await ctx.info("Counted words", extra={"input": s, "word_count": result})
 
         return JSONResponse({"result": result})
     except Exception as e:
+        await ctx.error("Error in word counting")
         return JSONResponse({"error": str(e)}, status_code=400)
     
 #@mcp.custom_route("/tool/embed_text", methods=["POST"])
 @mcp.tool
-async def call_embed_text_tool(request,ctx:Context):
+async def call_embed_text_tool(text:str,ctx:Context):
+    """Call the text embedding tool."""
     try:
-        # Extract input from request body
-        data = await request.json()
-        text = str(data.get("text"))
-
         # Call the tool
-        result = embed_text(text,ctx)
-
+        result = embed_text(text)
+        await ctx.debug(f"Embedding length: {len(result)}")
         return JSONResponse({"result": result})
     except Exception as e:
+        await ctx.error(f"Error during embedding: {str(e)}")
         return JSONResponse({"error": str(e)}, status_code=400)
     
 #@mcp.custom_route("/tool/compare_texts", methods=["POST"])
 @mcp.tool
-async def call_compare_texts_tool(request,ctx:Context):
+async def call_compare_texts_tool(text1: str,, text2:str, ctx:Context):
+    """Call the text comparison tool."""
     try:
-        # Extract input from request body
-        data = await request.json()
-        text1 = str(data.get("text1"))
-        text2 = str(data.get("text2"))
-
         # Call the tool
-        result = compare_texts(text1,text2,ctx)
-
+        result = compare_texts(text1,text2)
+        await ctx.info("Starting comparison", extra={"text1": text1, "text2": text2})
         return JSONResponse({"result": result})
     except Exception as e:
+        await ctx.error(f"Error during text comparison: {str(e)}")
         return JSONResponse({"error": str(e)}, status_code=400)
 
 

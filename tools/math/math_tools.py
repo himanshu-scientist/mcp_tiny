@@ -1,17 +1,15 @@
 # tools/math/math_tools.py
 from typing import Annotated
 from pydantic import Field
-from fastmcp import Context
 
 class MathTool:
     def add(
         a: Annotated[float, Field(description="First addend")],
-        b: Annotated[float, Field(description="Second addend")],ctx
-    : Context
+        b: Annotated[float, Field(description="Second addend")],
     ) -> float:
         """Add two numbers and return the sum."""
         result = a + b
-        ctx.info("Performed addition", extra={"a": a, "b": b, "result": result})
+        
         return result
 
     def multiply(
@@ -20,14 +18,15 @@ class MathTool:
     ) -> float:
         """Multiply two numbers and return the product."""
         result= a * b
-        Context.info("Performed multiplication", extra={"a": a, "b": b, "result": result})
         return result
 
 
 math_tool = MathTool()
 
-def add(a, b,ctx):
+def add(a, b):
+    """Add two numbers and return the sum."""
     return math_tool.add(a, b,ctx)
 
-def multiply(a, b,ctx):
+def multiply(a, b):
+    """Multiply two numbers and return the product."""
     return math_tool.multiply(a, b,ctx)

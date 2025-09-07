@@ -3,7 +3,6 @@
 import boto3
 import json
 from sklearn.metrics.pairwise import cosine_similarity
-from fastmcp import Context
 
 # Initialize Bedrock client
 bedrock = boto3.client("bedrock-runtime", region_name="us-east-1")  # Use your region
@@ -13,7 +12,7 @@ MODEL_ID = "amazon.titan-embed-text-v1"
 
 
 class GenAITool:
-    async def embed_text(text: str, ctx:Context) -> list:
+    async def embed_text(text: str) -> list:
         #await ctx.info(f"Embedding text: {text}")
         """Return embedding of texts using Titan embeddings."""
         payload = {
@@ -28,16 +27,15 @@ class GenAITool:
             )
             response_body = json.loads(response["body"].read())
             embedding = response_body["embedding"]
-            await ctx.debug(f"Embedding length: {len(embedding)}")
+            
             return embedding
         except Exception as e:
-            await ctx.error(f"Error during embedding: {str(e)}")
             raise
 
 
-    async def compare_texts(text1: str, text2: str,ctx:Context) -> float:
+    async def compare_texts(text1: str, text2: str) -> float:
         """Return cosine similarity between two texts using Titan embeddings."""
-        await ctx.info("Starting comparison", extra={"text1": text1, "text2": text2})
+        
         emb1 = [await embed_text(text1)]
         emb2 = [await embed_text(text2)]
         similarity = float(cosine_similarity(emb1, emb2)[0][0])
@@ -47,10 +45,14 @@ class GenAITool:
 
 genai_tool = GenAITool()
 
-def embed_text(text,ctx):
-    return genai_tool.embed_text(text,ctx)
-def compare_texts(text1, text2,ctx):
-    return genai_tool.compare_texts(text1, text2,ctx)
+def embed_text(text):
+    
+    """Return embedding of texts using Titan embeddings."""
+    return genai_tool.embed_text(text)
+
+def compare_texts(text1, text2):
+    """Return cosine similarity between two texts using Titan embeddings."""
+    return genai_tool.compare_texts(text1, text2)
 
 # if __name__ == "__main__":
 #     text_a = "The quick brown fox jumps over the lazy dog."
