@@ -12,7 +12,7 @@ MODEL_ID = "amazon.titan-embed-text-v1"
 
 
 class GenAITool:
-    async def embed_text(text: str) -> list:
+    def embed_text(self, text: str) -> list:
         #await ctx.info(f"Embedding text: {text}")
         """Return embedding of texts using Titan embeddings."""
         payload = {
@@ -33,11 +33,11 @@ class GenAITool:
             raise
 
 
-    async def compare_texts(text1: str, text2: str) -> float:
+    def compare_texts(self, text1: str, text2: str) -> float:
         """Return cosine similarity between two texts using Titan embeddings."""
         
-        emb1 = [await embed_text(text1)]
-        emb2 = [await embed_text(text2)]
+        emb1 = [embed_text(text1)]
+        emb2 = [embed_text(text2)]
         similarity = float(cosine_similarity(emb1, emb2)[0][0])
         return similarity
     

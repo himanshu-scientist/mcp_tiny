@@ -40,13 +40,13 @@ async def call_add_tool(a : float, b: float, ctx: Context)-> dict:
     """Add two numbers and return the sum."""
     await ctx.debug("Starting add two number")
     await ctx.info(f"Value of a and b is  {a, b}")
-    # try:
-    #     # Call the tool
-    result = add(a, b)
-    await ctx.info("Performed addition", extra={"a": a, "b": b, "result": result})
-    return {"result": result}
-    # except Exception as e:
-    #     return {"error": str(e),"status_code":400}
+    try:
+        # Call the tool
+        result = add(a, b)
+        await ctx.info("Performed addition", extra={"a": a, "b": b, "result": result})
+        return {"result": result}
+    except Exception as e:
+        return {"error": str(e),"status_code":400}
     
 
 # Custom route to call the Multiplication tool
@@ -75,11 +75,11 @@ async def call_reverse_string_tool(s: str, ctx: Context)-> dict:
     """Reverse a string."""
     try:
         result = reverse_string(s)
-        await ctx.info("Reversed string", extra={"original": s, "reversed": result})
+        await ctx.info("Reversed string", extra={"original": s, "reversed": str(result)})
         return {"result": result}
     except Exception as e:
         await ctx.error("Error in Reversed string")
-        return {"error": str(e),"status_code":400}, 
+        return {"error": str(e),"status_code":400}
 
 
 
@@ -92,7 +92,7 @@ async def call_count_words_tool(s :str,ctx: Context)-> dict:
     """Count the number of words in a string."""
     try:
         # Call the tool
-        result = count_words(s,ctx)
+        result = count_words(s)
         await ctx.info("Counted words", extra={"input": s, "word_count": result})
 
         return {"result": result}

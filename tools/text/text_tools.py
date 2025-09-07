@@ -2,13 +2,13 @@
 
 
 class TextTool:
-    async def reverse_string(s: str) -> str:
+    def reverse_string(self, s: str) -> str:
         """Reverse a string."""
         reversed_str = s[::-1]
         return reversed_str
 
 
-    async def count_words(s: str) -> int:
+    def count_words(self, s: str) -> int:
         """Count the number of words in a string."""
         word_count = len(s.split())
         return word_count
