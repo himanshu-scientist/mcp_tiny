@@ -14,3 +14,6 @@ client/__pycache__/
 mcp_tiny.egg-info/
 utils/__pycache__/
 my_env/
+tools/genai/__pycache__/
+tools/math/__pycache__/
+tools/text/__pycache__/

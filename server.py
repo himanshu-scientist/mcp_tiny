@@ -7,9 +7,7 @@ logging.basicConfig(
 
 logging.getLogger("fastmcp").setLevel(logging.INFO)
 
-from fastmcp import FastMCP
 from fastmcp import FastMCP, Context
-from fastmcp.server.dependencies import get_context 
 
 #from tools import add, multiply, reverse_string, count_words, embed_text, compare_texts
 
@@ -25,7 +23,6 @@ mcp = FastMCP("base-ey-mcp")
 from starlette.responses import JSONResponse
  
 @mcp.custom_route("/health", methods=["GET"])
-
 async def health_check(request):
     return JSONResponse({"desc": "Health of server is okay"})
 
@@ -39,34 +36,34 @@ async def client_tool_list(request):
 
 #@mcp.custom_route("/tool/add", methods=["POST"])
 @mcp.tool
-async def call_add_tool(a : float, b: float, ctx: Context)-> float:
-    """Call the addition tool."""
-    try:
-
-        # Call the tool
-        result = add(a, b)
-        await ctx.info("Performed addition", extra={"a": a, "b": b, "result": result})
-
-        return JSONResponse({"result": result})
-    except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=400)
+async def call_add_tool(a : float, b: float, ctx: Context)-> dict:
+    """Add two numbers and return the sum."""
+    await ctx.debug("Starting add two number")
+    await ctx.info(f"Value of a and b is  {a, b}")
+    # try:
+    #     # Call the tool
+    result = add(a, b)
+    await ctx.info("Performed addition", extra={"a": a, "b": b, "result": result})
+    return {"result": result}
+    # except Exception as e:
+    #     return {"error": str(e),"status_code":400}
     
 
 # Custom route to call the Multiplication tool
 
 #@mcp.custom_route("/tool/multiply", methods=["POST"])
 @mcp.tool
-async def call_multiply_tool(a : float, b: float, ctx: Context)-> float:
-    """Call the multiplication tool."""
+async def call_multiply_tool(a : float, b: float, ctx: Context)-> dict:
+    """Multiply two numbers and return the product."""
     try:
         # Call the tool
         result = multiply(a, b)
         ctx.info("Performed multiplication", extra={"a": a, "b": b, "result": result})
 
-        return JSONResponse({"result": result})
+        return {"result": result}
     except Exception as e:
         ctx.error("ERROR while  Performing multiplication")
-        return JSONResponse({"error": str(e)}, status_code=400)
+        return {"error": str(e),"status_code":400}
     
 
 
@@ -74,15 +71,15 @@ async def call_multiply_tool(a : float, b: float, ctx: Context)-> float:
 
 #@mcp.custom_route("/tool/reverse_string", methods=["POST"])
 @mcp.tool
-async def call_reverse_string_tool(s: str,ctx:Context)-> str:
-    """Call the string reversing tool."""
+async def call_reverse_string_tool(s: str, ctx: Context)-> dict:
+    """Reverse a string."""
     try:
         result = reverse_string(s)
         await ctx.info("Reversed string", extra={"original": s, "reversed": result})
-        return JSONResponse({"result": result})
+        return {"result": result}
     except Exception as e:
         await ctx.error("Error in Reversed string")
-        return JSONResponse({"error": str(e)}, status_code=400)
+        return {"error": str(e),"status_code":400}, 
 
 
 
@@ -91,43 +88,43 @@ async def call_reverse_string_tool(s: str,ctx:Context)-> str:
 
 #@mcp.custom_route("/tool/count_words", methods=["POST"])
 @mcp.tool
-async def call_count_words_tool(s :str,ctx:Context):
-    """Call the word counting tool."""
+async def call_count_words_tool(s :str,ctx: Context)-> dict:
+    """Count the number of words in a string."""
     try:
         # Call the tool
         result = count_words(s,ctx)
         await ctx.info("Counted words", extra={"input": s, "word_count": result})
 
-        return JSONResponse({"result": result})
+        return {"result": result}
     except Exception as e:
         await ctx.error("Error in word counting")
-        return JSONResponse({"error": str(e)}, status_code=400)
+        return {"error": str(e),"status_code":400}
     
 #@mcp.custom_route("/tool/embed_text", methods=["POST"])
 @mcp.tool
-async def call_embed_text_tool(text:str,ctx:Context):
-    """Call the text embedding tool."""
+async def call_embed_text_tool(text:str,ctx: Context)->dict:
+    """Return embedding of texts using Titan embeddings."""
     try:
         # Call the tool
         result = embed_text(text)
         await ctx.debug(f"Embedding length: {len(result)}")
-        return JSONResponse({"result": result})
+        return {"result": list(result)}
     except Exception as e:
         await ctx.error(f"Error during embedding: {str(e)}")
-        return JSONResponse({"error": str(e)}, status_code=400)
+        return {"error": str(e),"status_code":400}
     
 #@mcp.custom_route("/tool/compare_texts", methods=["POST"])
 @mcp.tool
-async def call_compare_texts_tool(text1: str,, text2:str, ctx:Context):
-    """Call the text comparison tool."""
+async def call_compare_texts_tool(text1: str, text2:str, ctx: Context)-> dict:
+    """Return cosine similarity between two texts using Titan embeddings."""
     try:
         # Call the tool
         result = compare_texts(text1,text2)
         await ctx.info("Starting comparison", extra={"text1": text1, "text2": text2})
-        return JSONResponse({"result": result})
+        return {"result": result}
     except Exception as e:
         await ctx.error(f"Error during text comparison: {str(e)}")
-        return JSONResponse({"error": str(e)}, status_code=400)
+        return {"error": str(e),"status_code":400}
 
 
 # Adhoc tool to demonstrate enable/disable functionality

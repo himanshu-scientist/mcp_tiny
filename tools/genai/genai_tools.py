@@ -39,7 +39,6 @@ class GenAITool:
         emb1 = [await embed_text(text1)]
         emb2 = [await embed_text(text2)]
         similarity = float(cosine_similarity(emb1, emb2)[0][0])
-        await ctx.info(f"Cosine similarity: {similarity}")
         return similarity
     
 
