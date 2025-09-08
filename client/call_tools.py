@@ -2,7 +2,7 @@
 import asyncio
 try:
     import tool_utils
-except:
+except ImportError:
     from client import tool_utils
 async def call_tool_by_name(tool_name: str, input_data: dict):
     client = tool_utils.get_client()
@@ -20,4 +20,3 @@ if __name__ == "__main__":
     kk = ("embed_text", {"text": "i am best and good"})
     asyncio.run(call_tool_by_name("count_words", {"s": "This is a test string."}))
     asyncio.run(call_tool_by_name(*kk))
-    
