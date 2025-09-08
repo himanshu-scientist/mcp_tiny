@@ -5,6 +5,11 @@ import fastmcp
 from tools import add, multiply, reverse_string, count_words, embed_text, compare_texts
 from client.list_tools import list_available_tools as  list_tools
 
+from llm_agent import llm_get_expected_tool_and_format, llm_respond_user
+from client.list_tools import list_available_tools
+from client.call_tools import call_tool_by_name
+import ast
+
 # Register tools by passing the functions to the server constructor
 mcp = FastMCP("base-ey-mcp", tools=[add, multiply, reverse_string, count_words, embed_text, compare_texts])
 
@@ -121,24 +126,7 @@ async def call_compare_texts_tool(request):
         return JSONResponse({"error": str(e)}, status_code=400)
 
 
-# Adhoc tool to demonstrate enable/disable functionality
-
-@mcp.tool
-def dynamic_tool():
-    return "I am a dynamic tool."
-
-# Disable and re-enable the tool
-dynamic_tool.disable()
-dynamic_tool.enable()
-
-
-# if __name__ == "__main__":
-#     mcp.run()
-from llm_agent import llm_get_expected_tool_and_format, llm_respond_user
-from client.list_tools import list_available_tools
-from client.call_tools import call_tool_by_name
-import ast
-@mcp.custom_route("/llm-agent", methods=["POST"])
+@mcp.custom_route("/llm_agent", methods=["POST"])
 async def llm_agent_endpoint(request):
     try:
         data = await request.json()
@@ -178,5 +166,16 @@ async def llm_agent_endpoint(request):
     
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
+
+
+# @mcp.tool
+# def dynamic_tool():
+#     return "I am a dynamic tool."
+
+# # Disable and re-enable the tool
+# dynamic_tool.disable()
+# dynamic_tool.enable()
+
+
     
     

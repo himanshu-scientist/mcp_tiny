@@ -7,7 +7,8 @@ WORKDIR /app
 COPY . /app
 
 # Install dependencies (adjust if you use a requirements.txt or similar)
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install uv
+RUN uv pip install --system --no-deps pyproject.toml
 
 # Expose the port your server will listen on
 EXPOSE 8000
