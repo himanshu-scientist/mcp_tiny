@@ -5,6 +5,9 @@ import logging
 from config import MODEL_ID, TITAN_MODEL_ID, REGION_NAME, MCP_SERVER_URL
 import os
 
+from tools.awslabs.cost_explorer_mcp_server.utility_handler import get_today_date
+from tools.awslabs.cost_explorer_mcp_server.cost_usage_handler import get_cost_and_usage
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -23,7 +26,7 @@ import ast
 
 # Register tools by passing the functions to the server constructor
 # removing add, multiply tools for now
-mcp = FastMCP("base-ey-mcp", tools=[ reverse_string, count_words, embed_text, compare_texts])
+mcp = FastMCP("base-ey-mcp", tools=[ reverse_string, count_words, embed_text, compare_texts,get_today_date])
 
 from starlette.responses import JSONResponse
  
@@ -268,19 +271,19 @@ SERVER_INSTRUCTIONS = """
 # mcp.tool('get_cost_and_usage')(get_cost_and_usage)
 
 
-@mcp.custom_route("/tool/get_today_date", methods=["GET"])
-async def call_count_words_tool(request):
-    """
-    Calls the 'count_words' tool to count words in a string.
-    """
-    try:
-        # data = await request.json()
-        result = await get_today_date(ctx=None)
+# @mcp.custom_route("/tool/get_today_date", methods=["POST"])
+# async def call_count_words_tool(request):
+#     """
+#     Calls the 'count_words' tool to count words in a string.
+#     """
+#     try:
+#         # data = await request.json()
+#         result = await get_today_date(ctx=None)
 
-        return JSONResponse({"result": result})
-    except Exception as e:
-        logger.error(f"Error in count words tool: {e}")
-        return JSONResponse({"error": str(e)}, status_code=400)
+#         return JSONResponse({"result": result})
+#     except Exception as e:
+#         logger.error(f"Error in count words tool: {e}")
+#         return JSONResponse({"error": str(e)}, status_code=400)
 
 # @mcp.tool
 # def dynamic_tool():
@@ -291,5 +294,4 @@ async def call_count_words_tool(request):
 # dynamic_tool.enable()
 
 
-    
-    
+# mcp.tool('get_today_date')(get_today_date())
