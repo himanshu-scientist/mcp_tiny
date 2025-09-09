@@ -58,7 +58,7 @@ def submit_tool():
 def submit_llm_prompt():
     payload = {"prompt": st.session_state.llm_prompt}
     try:
-        response = requests.post(llm_agent_url, json=payload, timeout=10)
+        response = requests.post(llm_agent_url, json=payload, timeout=1000)
         response.raise_for_status()
         st.session_state.llm_response = response.json()
     except requests.exceptions.RequestException as e:
@@ -70,13 +70,13 @@ def submit_llm_prompt():
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("Lists"):
+    if st.button("Available tools on MCP server"):
         fetch_tools()
         st.session_state.llm_active = False  # Hide LLM UI
         st.session_state.show_dialog = False  # Hide any open tool input dialogs
 
 with col2:
-    if st.button("Ask LLM"):
+    if st.button("Agentic Intraction with MCP server"):
         st.session_state.llm_active = True
         st.session_state.tool_data = None  # Hide tools list
         st.session_state.show_dialog = False  # Hide any open tool input dialogs
