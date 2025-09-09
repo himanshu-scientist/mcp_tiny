@@ -5,3 +5,4 @@ torch
 uvicorn
 httpx
 boto3
+python-dotenv
