@@ -50,7 +50,7 @@ async def client_tool_list(request):
 # Custom route to call the addition tool
 
 #@mcp.custom_route("/tool/add", methods=["POST"])
-@mcp.tool(tags=["Mathematical operation"])
+@mcp.tool(tags=["Mathematical operation"],enabled=True)
 async def call_add_tool(a : float, b: float, ctx: Context)-> dict:
     """Add two numbers and return the sum."""
     await ctx.debug("Starting add two number")
@@ -67,7 +67,7 @@ async def call_add_tool(a : float, b: float, ctx: Context)-> dict:
 # Custom route to call the Multiplication tool
 
 #@mcp.custom_route("/tool/multiply", methods=["POST"])
-@mcp.tool(tags=["Mathematical operation"])
+@mcp.tool(tags=["Mathematical operation"],enabled=True)
 async def call_multiply_tool(a : float, b: float, ctx: Context)-> dict:
     """Multiply two numbers and return the product."""
     try:
@@ -85,7 +85,7 @@ async def call_multiply_tool(a : float, b: float, ctx: Context)-> dict:
 # Custom route to call the Reversing of string  tool
 
 #@mcp.custom_route("/tool/reverse_string", methods=["POST"])
-@mcp.tool(tags=["String operation"])
+@mcp.tool(tags=["String operation"],enabled=True)
 async def call_reverse_string_tool(s: str, ctx: Context)-> dict:
     """Reverse a string."""
     try:
@@ -102,7 +102,7 @@ async def call_reverse_string_tool(s: str, ctx: Context)-> dict:
 # Custom route to call the count_words tool
 
 #@mcp.custom_route("/tool/count_words", methods=["POST"])
-@mcp.tool(tags=["String operation"])
+@mcp.tool(tags=["String operation"],enabled=True)
 async def call_count_words_tool(s :str,ctx: Context)-> dict:
     """Count the number of words in a string."""
     try:
@@ -116,7 +116,7 @@ async def call_count_words_tool(s :str,ctx: Context)-> dict:
         return {"error": str(e),"status_code":400}
     
 #@mcp.custom_route("/tool/embed_text", methods=["POST"])
-@mcp.tool(tags=["GenAI Operation"])
+@mcp.tool(tags=["GenAI Operation"],enabled=True)
 async def call_embed_text_tool(text:str,ctx: Context)->dict:
     """Return embedding of texts using Titan embeddings."""
     try:
@@ -129,7 +129,7 @@ async def call_embed_text_tool(text:str,ctx: Context)->dict:
         return {"error": str(e),"status_code":400}
     
 #@mcp.custom_route("/tool/compare_texts", methods=["POST"])
-@mcp.tool(tags=["GenAI Operation"])
+@mcp.tool(tags=["GenAI Operation"],enabled=True)
 async def call_compare_texts_tool(text1: str, text2:str, ctx: Context)-> dict:
     """Return cosine similarity between two texts using Titan embeddings."""
     try:
@@ -142,20 +142,10 @@ async def call_compare_texts_tool(text1: str, text2:str, ctx: Context)-> dict:
         return {"error": str(e),"status_code":400}
 
 
-# Adhoc tool to demonstrate enable/disable functionality
-
-# @mcp.tool
-# def dynamic_tool():
-#     """A dynamic tool that can be enabled or disabled."""
-#     return "I am a dynamic tool."
-
-# # Disable and re-enable the tool
-# dynamic_tool.disable()
-# dynamic_tool.enable()
 
 
 
-@mcp.tool(tags=["Data Analysis"])
+@mcp.tool(tags=["Data Analysis"],enabled=True)
 async def analyze_data(data: list[float], ctx: Context) -> dict:
     """Analyze numerical data with comprehensive logging."""
     await ctx.debug("Starting analysis of numerical data")
@@ -180,7 +170,7 @@ async def analyze_data(data: list[float], ctx: Context) -> dict:
 firecrawl_client = FastMCPClient(f"https://mcp.firecrawl.dev/{FIRECRAWL_API_KEY}/v2/sse")
 
 
-@mcp.tool(tags=["web-scraping", "firecrawl"])
+@mcp.tool(tags=["web-scraping", "firecrawl"],enabled=True)
 async def scrape_url(url: str, ctx: Context) -> str:
     """Scrape main content from a URL using Firecrawl's MCP."""
     await ctx.info(f"Scraping URL: {url}")
@@ -206,7 +196,7 @@ async def scrape_url(url: str, ctx: Context) -> str:
     return str(result)
 
 
-@mcp.tool(tags=["aws", "s3", "file-check"])
+@mcp.tool(tags=["aws", "s3", "file-check"],enabled=True)
 async def list_s3_files(bucket_name: str, ctx: Context) -> str:
     """List files in the specified S3 bucket."""
     await ctx.info(f"Listing files in bucket: {bucket_name}")
