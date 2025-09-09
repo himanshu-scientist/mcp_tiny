@@ -19,6 +19,10 @@ Comparison tools for Cost Explorer MCP Server.
 
 import os
 import sys
+from pathlib import Path
+Path(__file__).parents[2].resolve().as_posix()
+sys.path.append(Path(__file__).parents[2].resolve().as_posix())
+
 from awslabs.cost_explorer_mcp_server.constants import VALID_COST_METRICS
 from awslabs.cost_explorer_mcp_server.helpers import (
     create_detailed_group_key,

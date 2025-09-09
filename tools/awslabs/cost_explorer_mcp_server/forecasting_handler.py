@@ -19,6 +19,11 @@ Forecasting tools for Cost Explorer MCP Server.
 
 import os
 import sys
+from pathlib import Path
+Path(__file__).parents[2].resolve().as_posix()
+sys.path.append(Path(__file__).parents[2].resolve().as_posix())
+
+print(sys.path)
 from awslabs.cost_explorer_mcp_server.constants import (
     VALID_FORECAST_GRANULARITIES,
     VALID_FORECAST_METRICS,

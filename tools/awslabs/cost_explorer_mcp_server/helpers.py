@@ -18,6 +18,10 @@ import boto3
 import os
 import re
 import sys
+from pathlib import Path
+Path(__file__).parents[2].resolve().as_posix()
+sys.path.append(Path(__file__).parents[2].resolve().as_posix())
+
 from awslabs.cost_explorer_mcp_server.constants import (
     VALID_DIMENSIONS,
     VALID_GROUP_BY_DIMENSIONS,

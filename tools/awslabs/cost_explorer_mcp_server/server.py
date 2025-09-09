@@ -19,6 +19,10 @@ This server provides tools for analyzing AWS costs and usage data through the AW
 
 import os
 import sys
+from pathlib import Path
+Path(__file__).parents[2].resolve().as_posix()
+sys.path.append(Path(__file__).parents[2].resolve().as_posix())
+
 from awslabs.cost_explorer_mcp_server.comparison_handler import (
     get_cost_and_usage_comparisons,
     get_cost_comparison_drivers,

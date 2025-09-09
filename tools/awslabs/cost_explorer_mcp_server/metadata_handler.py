@@ -19,6 +19,10 @@ Metadata tools for Cost Explorer MCP Server.
 
 import os
 import sys
+from pathlib import Path
+Path(__file__).parents[2].resolve().as_posix()
+sys.path.append(Path(__file__).parents[2].resolve().as_posix())
+
 from awslabs.cost_explorer_mcp_server.helpers import (
     get_available_dimension_values,
     get_available_tag_values,

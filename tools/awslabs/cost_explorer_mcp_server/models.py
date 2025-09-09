@@ -11,6 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
+import sys  
+
+from pathlib import Path
+Path(__file__).parents[2].resolve().as_posix()
+sys.path.append(Path(__file__).parents[2].resolve().as_posix())
 
 from awslabs.cost_explorer_mcp_server.constants import VALID_DIMENSIONS
 from awslabs.cost_explorer_mcp_server.helpers import validate_date_format, validate_date_range

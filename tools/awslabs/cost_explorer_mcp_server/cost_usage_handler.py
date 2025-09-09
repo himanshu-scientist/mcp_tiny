@@ -16,6 +16,10 @@
 
 This server provides tools for analyzing AWS costs and usage data through the AWS Cost Explorer API.
 """
+import sys
+from pathlib import Path
+Path(__file__).parents[2].resolve().as_posix()
+sys.path.append(Path(__file__).parents[2].resolve().as_posix())
 
 import json
 import os

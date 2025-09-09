@@ -25,6 +25,10 @@ from loguru import logger
 from mcp.server.fastmcp import Context
 from typing import Dict
 
+from pathlib import Path
+Path(__file__).parents[2].resolve().as_posix()
+sys.path.append(Path(__file__).parents[2].resolve().as_posix())
+
 
 # Configure Loguru logging
 logger.remove()
